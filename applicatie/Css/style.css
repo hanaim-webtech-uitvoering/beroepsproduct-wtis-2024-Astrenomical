@@ -673,10 +673,11 @@ bestellingenv2, h2 {
 /* Pizza afbeeldingen */
 .pizza-afbeelding {
     width: 100%;
-    height: 130px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    height: auto; 
+    object-fit: contain; 
+    max-height: 200px; 
+    display: block;
+    margin: 0 auto;
 }
 
 /* Prijs Info */
