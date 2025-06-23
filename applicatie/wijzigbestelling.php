@@ -10,17 +10,17 @@
 <body>
     <header>
         <!--Groene header voor elke pagina-->
-            <a href="index.html">
+            <a href="index.php">
             <img src="images/de-nerov2.png" alt="Website Mascotte" class="logo">
             </a>
             <h1>Pizza de Nero</h1>
-            <a href="login.html">
+            <a href="login.php">
             <img src="images/Profiel-pop.png" alt="Login icoon" class="login-icoon" title="Inloggen">
         </a>
-        <a href="index.html" class="menu-knop"  title="Pizza menu">
+        <a href="index.php" class="menu-knop"  title="Pizza menu">
             <p>Menu</p>
         </a>
-        <a href="winkelwagen.html">
+        <a href="winkelwagen.php">
             <img src="images/winkelkar.png" alt="Winkelkar icoon" class="winkelkar-icoon" title="Bekijk winkelwagen">
         </a>
     
@@ -70,6 +70,6 @@
   <!--Footer voor elke pagina met de privacy verklaring-->
   <footer>
     <p>Reno Swart</p>
-    <a href="privacy.html">Privacy verklaring</a>
+    <a href="privacy.php">Privacy verklaring</a>
   </footer>  
 </html>
