@@ -61,7 +61,14 @@ $typeNamen = [
         </nav>
         <!-- Pizza Secties -->
         <div class="pizza-secties"></div>
-        <?php foreach ($productenPerType as $type => $producten): ?>
+        <?php
+        $weergaveVolgorde = ['voorgerecht', 'maaltijd', 'pizza', 'drank'];
+
+        foreach ($weergaveVolgorde as $type):
+            if (!isset($productenPerType[$type]))
+                continue;
+            $producten = $productenPerType[$type];
+            ?>
             <section>
                 <div id="<?= htmlspecialchars($type) ?>" class="pizza-secties">
                     <h2><?= $typeNamen[$type] ?? ucfirst($type) ?></h2>
