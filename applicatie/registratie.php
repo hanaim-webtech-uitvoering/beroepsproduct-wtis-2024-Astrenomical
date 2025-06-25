@@ -51,23 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <header>
-        <!--Groene header voor elke pagina-->
-        <a href="index.php">
-            <img src="images/de-nerov2.png" alt="Website Mascotte" class="logo">
-        </a>
-        <h1>Pizza de Nero</h1>
-        <a href="login.php">
-            <img src="images/Profiel-pop.png" alt="Login icoon" class="login-icoon" title="Inloggen">
-        </a>
-        <a href="index.php" class="menu-knop" title="Pizza menu">
-            <p>Menu</p>
-        </a>
-        <a href="winkelwagen.php">
-            <img src="images/winkelkar.png" alt="Winkelkar icoon" class="winkelkar-icoon" title="Bekijk">
-        </a>
-
-    </header>
+    <?php require_once 'header.php'; ?>
     <main>
         <div class="registratie-form">
             <form action="#" method="POST">

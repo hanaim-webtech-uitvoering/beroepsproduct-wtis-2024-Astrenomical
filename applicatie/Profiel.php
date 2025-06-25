@@ -1,44 +1,53 @@
+<?php
+session_start();
+require_once 'db_connectie.php';
+require_once 'header.php';
+
+// Als de gebruiker niet is ingelogd, redirect naar loginpagina
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$username = $_SESSION['user']['username'];
+
+$conn = maakVerbinding();
+$stmt = $conn->prepare("SELECT first_name, last_name, address FROM [User] WHERE username = ?");
+$stmt->execute([$username]);
+$gebruiker = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$gebruiker) {
+    die("Gebruiker niet gevonden.");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"  href="Css/normalize.css">
+    <link rel="stylesheet" href="Css/normalize.css">
     <link rel="stylesheet" href="Css/style.css">
     <title>Profiel pagina</title>
 </head>
+
 <body>
-    <header>
-        <!--Groene header voor elke pagina-->
-            <a href="index.php">
-            <img src="images/de-nerov2.png" alt="Website Mascotte" class="logo">
-            </a>
-            <h1>Pizza de Nero</h1>
-            <a href="login.php">
-            <img src="images/Profiel-pop.png" alt="Login icoon" class="login-icoon" title="Inloggen">
-        </a>
-        <a href="index.php" class="menu-knop"  title="Pizza menu">
-            <p>Menu</p>
-        </a>
-        <a href="winkelwagen.php">
-            <img src="images/winkelkar.png" alt="Winkelkar icoon" class="winkelkar-icoon" title="Bekijk winkelwagen">
-        </a>
-    
-    </header>
     <main>
-    <!--Profiel informatie van de klant aan linkerkant-->
-     <div class="profiel-overzicht">
-        <div class="profiel-info">
-            <h2>Profiel</h2>
-            <div class="profiel-details">
-                <p><strong>Naam</strong></p>
-                <p>Reno Swart</p>
-                <p><strong>Adres</strong></p>
-                <p>Kapellenberlaan 5</p>
-                <p>6891 AA</p>
-                <p>Rozendaal</p>
-            </div>
+        <!--Profiel informatie van de klant aan linkerkant-->
+        <div class="profiel-details">
+            <h2>Profielgegevens</h2>
+            <p><strong>Gebruikersnaam</strong></p>
+            <p><?= htmlspecialchars($_SESSION['user']['username']) ?></p>
+
+            <p><strong>Naam</strong></p>
+            <p><?= htmlspecialchars($gebruiker['first_name'] . ' ' . $gebruiker['last_name']) ?></p>
+
+            <p><strong>address</strong></p>
+            <p><?= nl2br(htmlspecialchars($gebruiker['address'])) ?></p>
         </div>
+
 
         <!--De bestelling historie van de klant-->
         <div class="bestel-historie">
@@ -63,12 +72,13 @@
                 <p>€ 24,50</p>
             </div>
         </div>
-    </div>
+        </div>
     </main>
     <!--Footer voor elke pagina met de privacy verklaring-->
     <footer>
         <p>Reno Swart</p>
         <a href="privacy.php">Privacy verklaring</a>
-      </footer>      
+    </footer>
 </body>
+
 </html>

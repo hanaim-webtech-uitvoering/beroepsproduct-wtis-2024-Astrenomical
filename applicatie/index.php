@@ -55,24 +55,7 @@ $typeNamen = [
 </head>
 
 <body>
-    <header>
-        <!--Groene header voor elke pagina-->
-        <a href="index.php">
-            <img src="images/de-nerov2.png" alt="Website Mascotte" class="logo">
-        </a>
-        <h1>Pizza de Nero</h1>
-        <a href="login.php">
-            <img src="images/Profiel-pop.png" alt="Login icoon" class="login-icoon" title="Inloggen">
-        </a>
-        <a href="index.php" class="menu-knop" title="Pizza menu">
-            <p>Menu</p>
-        </a>
-        <a href="winkelwagen.php">
-            <img src="images/winkelkar.png" alt="Winkelkar icoon" class="winkelkar-icoon" title="Bekijk winkelwagen">
-        </a>
-
-    </header>
-
+    <?php require_once 'header.php'; ?>
     <main>
         <!-- Sidebar -->
         <nav class="sidebar">
@@ -107,13 +90,15 @@ $typeNamen = [
                                     <form method="post" action="index.php" style="display:inline;">
                                         <input type="hidden" name="product_name"
                                             value="<?= htmlspecialchars($product['name']) ?>">
-                                        <button type="submit" name="actie" value="toevoegen" class="voeg-verwijder-knop">+</button>
+                                        <button type="submit" name="actie" value="toevoegen"
+                                            class="voeg-verwijder-knop">+</button>
                                     </form>
 
                                     <form method="post" action="index.php" style="display:inline;">
                                         <input type="hidden" name="product_name"
                                             value="<?= htmlspecialchars($product['name']) ?>">
-                                        <button type="submit" name="actie" value="verwijderen" class="voeg-verwijder-knop">−</button>
+                                        <button type="submit" name="actie" value="verwijderen"
+                                            class="voeg-verwijder-knop">−</button>
                                     </form>
 
                                     <span>€ <?= number_format($product['price'], 2, ',', '.') ?></span>
