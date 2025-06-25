@@ -2,6 +2,29 @@
 session_start();
 require_once 'data_functies.php';
 
+// Producten toevoegen aan en verwijderen van winkelwagen
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actie']) && isset($_POST['product_name'])) {
+    $productNaam = $_POST['product_name'];
+
+    if (!isset($_SESSION['winkelwagen'])) {
+        $_SESSION['winkelwagen'] = [];
+    }
+
+    if ($_POST['actie'] === 'toevoegen') {
+        if (isset($_SESSION['winkelwagen'][$productNaam])) {
+            $_SESSION['winkelwagen'][$productNaam]++;
+        } else {
+            $_SESSION['winkelwagen'][$productNaam] = 1;
+        }
+    } elseif ($_POST['actie'] === 'verwijderen') {
+        if (isset($_SESSION['winkelwagen'][$productNaam])) {
+            $_SESSION['winkelwagen'][$productNaam]--;
+            if ($_SESSION['winkelwagen'][$productNaam] <= 0) {
+                unset($_SESSION['winkelwagen'][$productNaam]);
+            }
+        }
+    }
+}
 $productData = haalProductenOp();
 
 // Groepeer producten per type
@@ -81,10 +104,21 @@ $typeNamen = [
                                     alt="<?= $product['name'] ?>" class="pizza-afbeelding">
                                 <h3><?= $product['name'] ?></h3>
                                 <div class="prijs-info">
-                                    <span>+</span>
-                                    <span>-</span>
+                                    <form method="post" action="index.php" style="display:inline;">
+                                        <input type="hidden" name="product_name"
+                                            value="<?= htmlspecialchars($product['name']) ?>">
+                                        <button type="submit" name="actie" value="toevoegen" class="voeg-verwijder-knop">+</button>
+                                    </form>
+
+                                    <form method="post" action="index.php" style="display:inline;">
+                                        <input type="hidden" name="product_name"
+                                            value="<?= htmlspecialchars($product['name']) ?>">
+                                        <button type="submit" name="actie" value="verwijderen" class="voeg-verwijder-knop">−</button>
+                                    </form>
+
                                     <span>€ <?= number_format($product['price'], 2, ',', '.') ?></span>
                                 </div>
+
                             </div>
                         <?php endforeach; ?>
                     </div>
