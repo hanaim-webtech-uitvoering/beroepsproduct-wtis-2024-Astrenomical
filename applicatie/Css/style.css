@@ -270,48 +270,62 @@ input:focus {
 
 
 /*Style sheet winkelwagen.html*/
-.adres-overzicht {
+.bestel-overzicht {  
     display: flex;
-    width: 100%;
+    justify-content: center;
+    gap: 20px;  
+    max-width: 1200px;
+    padding-top: 100px;
+    margin: 0 auto;
+    align-items: flex-start;
 }
+
 .adres-info {
     width: 400px;         
-    height: 350px;        
+    height: 350px;       
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
     background-color: #e6e6e6;
-    margin-left: 40px;
-    margin-top: 20px;
+    
 }
+
 .bestelling-overzicht {
-    flex-grow: 1;
+    width: 400px;
+}
+
+.bestelling-info {
+    width: 400px;
+    min-height: 350px; 
+    border: 1px solid #ddd;
     padding: 20px;
+    border-radius: 5px;
+    background-color: #e6e6e6;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
 }
-.bestelling-info {
-    width: 400px;         
-    height: 300px;        
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 5px;
-    background-color: #e6e6e6;
-    position: relative;
-}
+
 .bestelling-info h2 {
     margin-bottom: 15px;
 }
 
 .bestel-item {
-    background-color: #f0f0f0; 
-    padding: 10px;             
-    margin-bottom: 10px;       
-    border-radius: 5px;       
-    display: flex;            
-    justify-content: space-between; 
-    align-items: center;       
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: 30px 1fr 30px 80px; 
+    align-items: center;
+    column-gap: 10px;
+    width: 100%; 
+    box-sizing: border-box;
+}
+
+.bestel-item span:last-child {
+    text-align: right;
+    display: block;
+    width: 100%;
 }
 
 .bestel-item:hover {
@@ -322,34 +336,26 @@ input:focus {
 .kosten-bestelling {
     display: flex;
     justify-content: space-between;
-    background-color: #f0f0f0;  
-    padding: 15px;               
-    border-radius: 5px;          
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
-    position: absolute;         
-    bottom: 75px;                
-    left: 20px;                  
-    right: 20px;                 
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: auto;
 }
 
 .plaats-bestelling {
-    position: absolute;      
-    bottom: 20px;            
-    right: 20px;             
-    padding: 10px 20px;
-    background-color: darkgreen;
+    background-color: #4CAF50;
     color: white;
-    text-align: center;
-    text-decoration: none;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
     font-weight: bold;
+    border: none;
+    padding: 10px 15px;
+    margin-right: 10px;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .plaats-bestelling:hover {
-    background-color: darkred;
+    background-color: #45a049;
 }
 .adres-gegevens {
     width: 100%;
@@ -357,6 +363,51 @@ input:focus {
     border: 1px solid #ddd;
     border-radius: 3px;
 }
+
+.winkelknop {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    font-size: 1em;
+    padding: 2px 8px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.winkelknop:hover {
+    background-color: #45a049;
+}
+
+.leeg-knop {
+    background-color: darkred;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.leeg-knop:hover {
+    background-color: red;
+}
+
+.succes-melding {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.bestel-acties {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
 
 /*stylesheet voor bestelstatus.html*/
 
@@ -702,6 +753,21 @@ bestellingenv2, h2 {
 .prijs-info span:hover {
     background-color: darkred;
 }
+
+.voeg-verwijder-knop {
+    background: none;
+    border: none;
+    color: #000;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0 5px;
+    margin: 0 2px;
+}
+
+.voeg-verwijder-knop:hover {
+    color: green;
+}
+
 
     /*Stylesheet voor privacy.html*/
     .container {
