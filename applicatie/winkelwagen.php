@@ -1,3 +1,8 @@
+<?php
+session_start();
+$totaal= 0;
+?>
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>

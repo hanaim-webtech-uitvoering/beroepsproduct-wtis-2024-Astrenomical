@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'data_functies.php';
 
 $productData = haalProductenOp();
@@ -53,12 +54,13 @@ $typeNamen = [
         <!-- Sidebar -->
         <nav class="sidebar">
             <ul>
-                <li><a href="#all">ALL</a></li>
-                <li><a href="#vegan">Vegan</a></li>
-                <li><a href="#vis">Vis</a></li>
-                <li><a href="#vlees">Vlees</a></li>
+                <li><a href="#voorgerecht">Voorgerechten</a></li>
+                <li><a href="#maaltijd">Maaltijden</a></li>
+                <li><a href="#pizza">Pizza’s</a></li>
+                <li><a href="#drank">Dranken</a></li>
             </ul>
         </nav>
+
         <!-- Pizza Secties -->
         <div class="pizza-secties"></div>
         <?php
