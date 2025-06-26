@@ -36,12 +36,11 @@ foreach ($productData as $product) {
 }
 
 $typeNamen = [
-    'pizza' => 'Pizza’s',
+    'pizza' => 'Pizzas',
     'drank' => 'Dranken',
     'maaltijd' => 'Maaltijden',
     'voorgerecht' => 'Voorgerechten'
 ];
-
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -62,12 +61,12 @@ $typeNamen = [
             <ul>
                 <li><a href="#voorgerecht">Voorgerechten</a></li>
                 <li><a href="#maaltijd">Maaltijden</a></li>
-                <li><a href="#pizza">Pizza’s</a></li>
+                <li><a href="#pizza">Pizza's</a></li>
                 <li><a href="#drank">Dranken</a></li>
             </ul>
         </nav>
 
-        <!-- Pizza Secties -->
+        <!-- Producten -->
         <div class="pizza-secties"></div>
         <?php
         $weergaveVolgorde = ['voorgerecht', 'maaltijd', 'pizza', 'drank'];
@@ -87,14 +86,14 @@ $typeNamen = [
                                     alt="<?= $product['name'] ?>" class="pizza-afbeelding">
                                 <h3><?= $product['name'] ?></h3>
                                 <div class="prijs-info">
-                                    <form method="post" action="index.php" style="display:inline;">
+                                    <form method="post" action="index.php" class="inline-form">
                                         <input type="hidden" name="product_name"
                                             value="<?= htmlspecialchars($product['name']) ?>">
                                         <button type="submit" name="actie" value="toevoegen"
                                             class="voeg-verwijder-knop">+</button>
                                     </form>
 
-                                    <form method="post" action="index.php" style="display:inline;">
+                                    <form method="post" action="index.php" class="inline-form">
                                         <input type="hidden" name="product_name"
                                             value="<?= htmlspecialchars($product['name']) ?>">
                                         <button type="submit" name="actie" value="verwijderen"

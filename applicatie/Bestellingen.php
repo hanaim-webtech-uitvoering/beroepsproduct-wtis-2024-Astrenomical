@@ -1,3 +1,30 @@
+<?php
+session_start();
+
+require_once 'data_functies.php';
+require_once 'header.php';
+
+//Controleert of ingelogd gebruiker Personnel is
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Personnel') {
+    header('Location: login.php');
+    exit;
+}
+
+// Update bestelling status
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order_id'], $_POST['nieuwe_status'])) {
+    updateBestellingStatus((int) $_POST['update_order_id'], (int) $_POST['nieuwe_status']);
+}
+
+// Haal alle bestellingen op uit DB
+$bestellingen = haalAlleBestellingenOp();
+$actief = $voltooid = [];
+foreach ($bestellingen as $b) {
+    if ($b['status'] < 3)
+        $actief[] = $b;
+    else
+        $voltooid[] = $b;
+}
+?>
 <!DOCTYPE html>
 <html lang="nl">
 
@@ -6,75 +33,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Css/normalize.css">
     <link rel="stylesheet" href="Css/style.css">
-    <title>Bestelling overzicht</title>
+    <title>Bestellingen</title>
 </head>
 
 <body>
-    <?php require_once 'header.php'; ?>
     <main>
-        <!--Overzicht voor personeel van de actieve en oude bestellingen-->
-        <div class="personeel-ID">Personeel ID: 123456</div>
+        <!-- Toon ingelogde medewerker -->
+        <div class="personeel-info">
+            Personeel: <?= htmlspecialchars($_SESSION['user']['username']) ?>
+        </div>
 
-        <div class="bestellingen">
-
-            <!--Bestellingen container(s)-->
-            <div class="bestellingenv2">
+        <div class="bestellingen-wrap">
+            <section>
                 <h2>Actieve bestellingen</h2>
+                <?php if (empty($actief)): ?>
+                    <p>Geen actieve bestellingen.</p>
+                <?php endif; ?>
+                <?php foreach ($actief as $b): ?>
 
-                <div class="bestelling-details">
-                    <div>
-                        <p>Pizza Mozzarella x2</p>
-                        <p>Pizza Pepperoni x1</p>
-                        <p>Geplaatst op 26-11-24 om 17:54</p>
-                        <p>Totaal: €33.00</p>
+                    <div class="bestelling-card">
+                        <p><strong>Order #<?= $b['order_id'] ?></strong>, geplaatst op
+                            <?= date('d-m-Y H:i', strtotime($b['datetime'])) ?></p>
+                        <p><strong>Adres:</strong> <?= htmlspecialchars($b['address']) ?></p>
+                        <p><strong>Personeel:</strong> <?= htmlspecialchars($b['personnel_username']) ?></p>
+                        <ul><?php foreach ($b['producten'] as $p): ?>
+                                <li><?= htmlspecialchars($p['product_name']) ?> x <?= (int) $p['quantity'] ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+
+                        <form method="GET" action="wijzigbestelling.php">
+                            <input type="hidden" name="order_id" value="<?= $b['order_id'] ?>">
+                            <button type="submit" class="knop-link">Bestelling inzien</button>
+                        </form>
                     </div>
+                <?php endforeach; ?>
+            </section>
 
-                    <!--Wijzig bestelling knop-->
-                    <form action="#" method="get">
-                        <button type="submit" class="knop-link">Bestelling inzien</button>
-                    </form>
-
-                </div>
-                <div class="bestelling-details">
-                    <div>
-                        <p>Pizza Pepperoni x1</p>
-                        <p>Geplaatst op 26-11-24 om 17:32</p>
-                        <p>Totaal: €12.50</p>
+            <section>
+                <h2>Voltooide bestellingen</h2>
+                <?php if (empty($voltooid)): ?>
+                    <p>Geen voltooide bestellingen.</p>
+                <?php endif; ?>
+                <?php foreach ($voltooid as $b): ?>
+                    <div class="bestelling-card voltooid">
+                        <p><strong>Order #<?= $b['order_id'] ?></strong>, geplaatst op
+                            <?= date('d-m-Y H:i', strtotime($b['datetime'])) ?></p>
+                        <p><strong>Adres:</strong> <?= htmlspecialchars($b['address']) ?></p>
+                        <p><strong>Personeel:</strong> <?= htmlspecialchars($b['personnel_username']) ?></p>
+                        <ul><?php foreach ($b['producten'] as $p): ?>
+                                <li><?= htmlspecialchars($p['product_name']) ?> x <?= (int) $p['quantity'] ?></li>
+                            <?php endforeach; ?>
+                        </ul>
                     </div>
-
-                    <!--Wijzig bestelling knop-->
-                    <form action="#" method="get">
-                        <button type="submit" class="knop-link">Bestelling inzien</button>
-                    </form>
-
-                </div>
-            </div>
-
-            <!--Bestellingen container(s)-->
-            <div class="bestellingenv2">
-                <h2>Voltooide Bestellingen</h2>
-                <div class="bestelling-details">
-                    <div>
-                        <p>Pizza Mozzarella x2</p>
-                        <p>Geplaatst op 22-11-24 om 18:00</p>
-                        <p>Totaal: €21.00</p>
-                    </div>
-
-                    <!--Wijzig bestelling knop-->
-                    <form action="#" method="get">
-                        <button type="submit" class="knop-link">Bestelling inzien</button>
-                    </form>
-
-                </div>
-
-            </div>
+                <?php endforeach; ?>
+            </section>
+            
         </div>
     </main>
-    <!--Footer voor elke pagina met de privacy verklaring-->
-    <footer>
-        <p>Reno Swart</p>
-        <a href="privacy.php">Privacy verklaring</a>
-    </footer>
 </body>
 
 </html>

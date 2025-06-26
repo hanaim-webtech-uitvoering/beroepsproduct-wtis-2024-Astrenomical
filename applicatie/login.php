@@ -2,6 +2,7 @@
 session_start();
 require_once 'db_connectie.php';
 
+//Login functie
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -10,31 +11,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $conn = maakVerbinding();
 
-            // Query ophalen van gebruiker op basis van username
             $stmt = $conn->prepare('SELECT * FROM [User] WHERE username = :username');
             $stmt->execute([':username' => $username]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($user && password_verify($password, $user['password'])) {
-                // Inloggen succesvol
-                $_SESSION['user'] = [
-                    'username' => $user['username'],
-                    'first_name' => $user['first_name'],
-                    'last_name' => $user['last_name'],
-                    'adress' => $user['adress']
-                ];
-                header('Location: profiel.php');
-                exit;
+            if ($user) {
+                if (password_verify($password, $user['password'])) {
+                    $_SESSION['user'] = [
+                        'username' => $user['username'],
+                        'first_name' => $user['first_name'],
+                        'last_name' => $user['last_name'],
+                        'address' => $user['address'],
+                        'role' => $user['role']  
+                    ];
+                    header('Location: profiel.php');
+                    exit;
+                } elseif ($password === $user['password']) {
+                    $_SESSION['user'] = [
+                        'username' => $user['username'],
+                        'first_name' => $user['first_name'],
+                        'last_name' => $user['last_name'],
+                        'address' => $user['address'],
+                        'role' => $user['role']
+                    ];
+                    header('Location: profiel.php');
+                    exit;
+                } else {
+                    $error = 'Ongeldige gebruikersnaam of wachtwoord.';
+                }
             } else {
                 $error = 'Ongeldige gebruikersnaam of wachtwoord.';
             }
         } catch (PDOException $e) {
             $error = 'Er is een fout opgetreden: ' . $e->getMessage();
         }
-    } else {
-        $error = 'Vul zowel gebruikersnaam als wachtwoord in.';
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -73,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </form>
 
                 <?php if (isset($error)): ?>
-                    <p style="color:red; font-weight:bold;"><?= htmlspecialchars($error) ?></p>
+                    <p class="error-message"><?= htmlspecialchars($error) ?></p>
                 <?php endif; ?>
 
                 <!-- Registratie link -->

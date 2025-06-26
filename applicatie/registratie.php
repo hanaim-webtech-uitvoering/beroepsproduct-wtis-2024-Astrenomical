@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2>Vul de volgende gegevens in om te registreren.</h2>
 
                 <?php if (isset($error)): ?>
-                    <p style="color:red;"><?= htmlspecialchars($error) ?></p>
+                    <p class="error-message"><?= htmlspecialchars($error) ?></p>
                 <?php endif; ?>
 
                 <label for="username">Gebruikersnaam</label>
