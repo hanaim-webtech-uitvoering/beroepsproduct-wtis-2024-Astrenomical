@@ -2,8 +2,22 @@
 session_start();
 require_once 'data_functies.php';
 
+
 $totaal = 0;
 $alleProducten = haalProductenOp();
+
+//Gebruiker ingelogd, vult automatisch adres
+$postcodeValue = '';
+$straatValue = '';
+$provincieValue = '';
+
+if (isset($_SESSION['user']['address'])) {
+    // Adres uit string halen van DB
+    $adresOnderdelen = explode(',', $_SESSION['user']['address']);
+    $straatValue = trim($adresOnderdelen[0] ?? '');
+    $postcodeValue = trim($adresOnderdelen[1] ?? '');
+    $provincieValue = trim($adresOnderdelen[2] ?? '');
+}
 
 // Verwerk POST acties
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -99,31 +113,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" name="actie" value="plaatsen">
                     <h2>Afleveradres</h2>
 
-                    <?php if (isset($_SESSION['foutmelding'])): ?>
+                    <?php if (isset($_SESSION['foutmelding'])) { ?>
                         <div class="fout-melding">
                             <p><?= htmlspecialchars($_SESSION['foutmelding']) ?></p>
                         </div>
                         <?php unset($_SESSION['foutmelding']); ?>
-                    <?php endif; ?>
+                    <?php } ?>
 
-                    <label for="postcode"><strong>Postcode:</strong></label>
-                    <input type="text" id="postcode" name="postcode" class="adres-gegevens" required>
-
-                    <label for="street"><strong>Straat & Huisnr:</strong></label>
-                    <input type="text" id="street" name="street" class="adres-gegevens" required>
-
-                    <label for="province"><strong>Provincie:</strong></label>
-                    <input type="text" id="province" name="province" class="adres-gegevens" required>
+                    <label for="postcode">Postcode</label>
+                    <input type="text" id="postcode" name="postcode" required
+                        value="<?= htmlspecialchars($postcodeValue) ?>">
+                    <label for="street">Straat</label>
+                    <input type="text" id="street" name="street" required value="<?= htmlspecialchars($straatValue) ?>">
+                    <label for="province">Provincie</label>
+                    <input type="text" id="province" name="province" required
+                        value="<?= htmlspecialchars($provincieValue) ?>">
 
                     <label for="comments">Opmerkingen:</label>
                     <textarea id="comments" name="comments" rows="3" class="adres-gegevens"></textarea>
 
-                    <?php if (!empty($_SESSION['winkelwagen'])): ?>
+                    <?php if (!empty($_SESSION['winkelwagen'])) { ?>
                         <button type="submit" class="plaats-bestelling">Plaats bestelling</button>
-                    <?php else: ?>
+                    <?php } else { ?>
                         <p class="geen-producten">Voeg eerst producten toe aan je winkelwagen om een bestelling te kunnen
                             plaatsen.</p>
-                    <?php endif; ?>
+                    <?php } ?>
                 </form>
             </div>
 
@@ -131,13 +145,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="bestelling-overzicht">
                 <div class="bestelling-info">
                     <h2>Bestelling</h2>
-                    <?php if (isset($_SESSION['bestelling_succes'])): ?>
+                    <?php if (isset($_SESSION['bestelling_succes'])) { ?>
                         <p class="succes-melding">Je bestelling is succesvol geplaatst!</p>
                         <?php unset($_SESSION['bestelling_succes']); ?>
-                    <?php endif; ?>
+                    <?php } ?>
 
-                    <?php if (!empty($_SESSION['winkelwagen'])): ?>
-                        <?php foreach ($_SESSION['winkelwagen'] as $naam => $aantal):
+                    <?php if (!empty($_SESSION['winkelwagen'])) {
+                        foreach ($_SESSION['winkelwagen'] as $naam => $aantal) {
                             $prijs = vindPrijs($naam, $alleProducten);
                             $totaal += $prijs * $aantal;
                             ?>
@@ -156,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 <span>€ <?= number_format($prijs * $aantal, 2, ',', '.') ?></span>
                             </div>
-                        <?php endforeach; ?>
+                        <?php } ?>
 
                         <div class="kosten-bestelling">
                             <strong>Totaal</strong>
@@ -169,9 +183,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     winkelwagen</button>
                             </form>
                         </div>
-                    <?php else: ?>
+                    <?php } else { ?>
                         <p>Je winkelwagen is leeg.</p>
-                    <?php endif; ?>
+                    <?php } ?>
                 </div>
             </div>
         </div>

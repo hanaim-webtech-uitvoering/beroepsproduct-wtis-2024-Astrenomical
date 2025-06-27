@@ -71,16 +71,19 @@ $typeNamen = [
         <?php
         $weergaveVolgorde = ['voorgerecht', 'maaltijd', 'pizza', 'drank'];
 
-        foreach ($weergaveVolgorde as $type):
-            if (!isset($productenPerType[$type]))
+        foreach ($weergaveVolgorde as $type) {
+            if (!isset($productenPerType[$type])) {
                 continue;
+            }
             $producten = $productenPerType[$type];
             ?>
             <section>
                 <div id="<?= htmlspecialchars($type) ?>" class="pizza-secties">
                     <h2><?= $typeNamen[$type] ?? ucfirst($type) ?></h2>
                     <div class="pizza-grid">
-                        <?php foreach ($producten as $product): ?>
+                        <?php
+                        foreach ($producten as $product) {
+                            ?>
                             <div class="pizza-item">
                                 <img src="images/<?= strtolower(str_replace(' ', '-', $product['name'])) ?>.png"
                                     alt="<?= $product['name'] ?>" class="pizza-afbeelding">
@@ -104,11 +107,15 @@ $typeNamen = [
                                 </div>
 
                             </div>
-                        <?php endforeach; ?>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </section>
-        <?php endforeach; ?>
+        <?php
+        }
+        ?>
     </main>
 
     <!--Footer voor elke pagina met de privacy verklaring-->

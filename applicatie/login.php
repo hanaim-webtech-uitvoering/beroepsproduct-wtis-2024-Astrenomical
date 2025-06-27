@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'db_connectie.php';
-
+ 
 //Login functie
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';

@@ -2,7 +2,7 @@
 session_start();
 
 require_once 'data_functies.php';
-require_once 'header.php';
+
 
 //Controleert of ingelogd gebruiker Personnel is
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Personnel') {
@@ -18,11 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order_id'], $_
 // Haal alle bestellingen op uit DB
 $bestellingen = haalAlleBestellingenOp();
 $actief = $voltooid = [];
-foreach ($bestellingen as $b) {
-    if ($b['status'] < 3)
-        $actief[] = $b;
-    else
-        $voltooid[] = $b;
+foreach ($bestellingen as $bestelling) {
+    if ($bestelling['status'] < 3) {
+        $actief[] = $bestelling;
+    } else {
+        $voltooid[] = $bestelling;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -37,7 +38,9 @@ foreach ($bestellingen as $b) {
 </head>
 
 <body>
+    <?php require_once 'header.php'; ?>
     <main>
+        
         <!-- Toon ingelogde medewerker -->
         <div class="personeel-info">
             Personeel: <?= htmlspecialchars($_SESSION['user']['username']) ?>
@@ -46,19 +49,20 @@ foreach ($bestellingen as $b) {
         <div class="bestellingen-wrap">
             <section>
                 <h2>Actieve bestellingen</h2>
-                <?php if (empty($actief)): ?>
+                <?php if (empty($actief)) { ?>
                     <p>Geen actieve bestellingen.</p>
-                <?php endif; ?>
-                <?php foreach ($actief as $b): ?>
+                <?php } ?>
+                <?php foreach ($actief as $b) { ?>
 
                     <div class="bestelling-card">
                         <p><strong>Order #<?= $b['order_id'] ?></strong>, geplaatst op
                             <?= date('d-m-Y H:i', strtotime($b['datetime'])) ?></p>
                         <p><strong>Adres:</strong> <?= htmlspecialchars($b['address']) ?></p>
                         <p><strong>Personeel:</strong> <?= htmlspecialchars($b['personnel_username']) ?></p>
-                        <ul><?php foreach ($b['producten'] as $p): ?>
+                        <ul>
+                            <?php foreach ($b['producten'] as $p) { ?>
                                 <li><?= htmlspecialchars($p['product_name']) ?> x <?= (int) $p['quantity'] ?></li>
-                            <?php endforeach; ?>
+                            <?php } ?>
                         </ul>
 
                         <form method="GET" action="wijzigbestelling.php">
@@ -66,28 +70,29 @@ foreach ($bestellingen as $b) {
                             <button type="submit" class="knop-link">Bestelling inzien</button>
                         </form>
                     </div>
-                <?php endforeach; ?>
+                <?php } ?>
             </section>
 
             <section>
                 <h2>Voltooide bestellingen</h2>
-                <?php if (empty($voltooid)): ?>
+                <?php if (empty($voltooid)) { ?>
                     <p>Geen voltooide bestellingen.</p>
-                <?php endif; ?>
-                <?php foreach ($voltooid as $b): ?>
+                <?php } ?>
+                <?php foreach ($voltooid as $b) { ?>
                     <div class="bestelling-card voltooid">
                         <p><strong>Order #<?= $b['order_id'] ?></strong>, geplaatst op
                             <?= date('d-m-Y H:i', strtotime($b['datetime'])) ?></p>
                         <p><strong>Adres:</strong> <?= htmlspecialchars($b['address']) ?></p>
                         <p><strong>Personeel:</strong> <?= htmlspecialchars($b['personnel_username']) ?></p>
-                        <ul><?php foreach ($b['producten'] as $p): ?>
+                        <ul>
+                            <?php foreach ($b['producten'] as $p) { ?>
                                 <li><?= htmlspecialchars($p['product_name']) ?> x <?= (int) $p['quantity'] ?></li>
-                            <?php endforeach; ?>
+                            <?php } ?>
                         </ul>
                     </div>
-                <?php endforeach; ?>
+                <?php } ?>
             </section>
-            
+
         </div>
     </main>
 </body>

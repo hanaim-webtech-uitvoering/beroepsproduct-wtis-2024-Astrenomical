@@ -2,7 +2,7 @@
 session_start();
 require_once 'db_connectie.php';
 require_once 'data_functies.php';
-require_once 'header.php';
+
 
 
 if (!isset($_SESSION['user'])) {
@@ -39,6 +39,7 @@ $laatsteAdres = haalLaatsteBestellingAdresOp($username);
 </head>
 
 <body>
+    <?php require_once 'header.php'; ?>
     <main>
         <div class="profiel-overzicht">
             <!-- PROFIELGEGEVENS -->
@@ -61,14 +62,16 @@ $laatsteAdres = haalLaatsteBestellingAdresOp($username);
             <div class="bestel-historie">
                 <h2>Bestellingen overzicht</h2>
 
-                <?php if (empty($bestellingen)): ?>
+                <?php 
+                if (empty($bestellingen)) {
+                    ?>
                     <p>Je hebt nog geen bestellingen geplaatst.</p>
-                <?php else: ?>
-                    <?php foreach ($bestellingen as $bestelling): ?>
+                    <?php
+                } else {
+                    foreach ($bestellingen as $bestelling) {
+                        ?>
                         <div class="bestelde-items">
-                            <p><strong>Bestelling #<?= htmlspecialchars($bestelling['order_id']) ?></strong> -
-                                <?= htmlspecialchars($bestelling['datetime']) ?>
-                            </p>
+                            <p><strong>Bestelling #<?= htmlspecialchars($bestelling['order_id']) ?></strong> - <?= htmlspecialchars($bestelling['datetime']) ?></p>
                             <p><strong>Adres:</strong> <?= nl2br(htmlspecialchars($bestelling['address'])) ?></p>
                             <p><strong>Status:</strong>
                                 <?php
@@ -87,33 +90,25 @@ $laatsteAdres = haalLaatsteBestellingAdresOp($username);
                                 }
                                 ?>
                             </p>
-                            <?php
-                            // Bereken tijdsverschil in minuten
-                            $bestelMoment = new DateTime($bestelling['datetime']);
-                            $nu = new DateTime();
-                            $verschil = $bestelMoment->diff($nu);
-                            $minutenVerschil = ($verschil->h * 60) + $verschil->i;
-
-                            // Toon knop als bestelling jonger is dan 10 minuten
-                            if ($minutenVerschil < 10): ?>
-                                <form action="bestelstatus.php" method="post">
-                                    <input type="hidden" name="order_id" value="<?= htmlspecialchars($bestelling['order_id']) ?>">
-                                    <input type="hidden" name="tijd" value="<?= $bestelMoment->format('H:i') ?>">
-                                    <input type="hidden" name="producten"
-                                        value="<?= htmlspecialchars(json_encode($bestelling['producten'])) ?>">
-                                    <input type="hidden" name="adres" value="<?= htmlspecialchars($bestelling['address']) ?>">
-                                    <button type="submit" class="status-knop">Bestelling status bekijken</button>
-                                </form>
-                            <?php endif; ?>
+                            <form action="bestelstatus.php" method="post">
+                                <input type="hidden" name="order_id" value="<?= htmlspecialchars($bestelling['order_id']) ?>">
+                                <button type="submit" class="status-knop">Bekijk bestelstatus</button>
+                            </form>
 
                             <ul>
-                                <?php foreach ($bestelling['producten'] as $product): ?>
+                                <?php
+                                foreach ($bestelling['producten'] as $product) {
+                                    ?>
                                     <li><?= htmlspecialchars($product['product_name']) ?> x <?= (int) $product['quantity'] ?></li>
-                                <?php endforeach; ?>
+                                    <?php
+                                }
+                                ?>
                             </ul>
                         </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                        <?php
+                    }
+                }
+                ?>
             </div>
         </div>
     </main>

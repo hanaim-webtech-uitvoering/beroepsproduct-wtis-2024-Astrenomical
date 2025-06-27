@@ -1,51 +1,54 @@
 <?php
 session_start();
+require_once 'data_functies.php';
 
-// Check of er een bestelling is
-if (!isset($_SESSION['laatste_bestelling'])) {
-    header('Location: winkelwagen.php');
+if (!isset($_SESSION['user'])) {
+    header('Location: login.php');
     exit;
 }
 
- // Bestelling verstuurd via POST, sla op in sessie
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'])) {
-    $_SESSION['laatste_bestelling'] = [
-        'order_id' => $_POST['order_id'],
-        'tijd' => $_POST['tijd'],
-        'producten' => json_decode($_POST['producten'], true),
-        'adres' => [
-            'straat' => $_POST['adres'] 
-        ]
-    ];
+// Haal order_id op via GET of POST
+$order_id = null;
+if (isset($_GET['order_id'])) {
+    $order_id = (int) $_GET['order_id'];
+} elseif (isset($_POST['order_id'])) {
+    $order_id = (int) $_POST['order_id'];
 }
 
-$bestelling = $_SESSION['laatste_bestelling'];
+if (!$order_id) {
+    echo "Geen bestelling geselecteerd.";
+    exit;
+}
+
+// Haal bestelling op uit DB
+$bestelling = haalBestellingOp($order_id);
+
+if (!$bestelling) {
+    echo "Bestelling niet gevonden.";
+    exit;
+}
+
+// Variabelen voor bestelgegevens en besteltijd
 $productlijst = $bestelling['producten'] ?? [];
-$adres = $bestelling['adres'] ?? [];
+$adres = $bestelling['address'] ?? 'Adres niet beschikbaar';
+$bestelTijd = date('H:i', strtotime($bestelling['datetime']));
 
-$bestelTijd = $bestelling['tijd'] ?? '';
+// Bepaal status van bestelling
 $statusIndex = 0;
-
-//Besteltijd van nu en het moment van bestellen
-if (!empty($bestelTijd)) {
-    $bestelMoment = DateTime::createFromFormat('H:i', $bestelTijd);
-    $nu = new DateTime();
-    $verschil = $bestelMoment ? $bestelMoment->diff($nu) : null;
-
-    if ($verschil) {
-        $minuten = ($verschil->h * 60) + $verschil->i;
-        if ($minuten >= 10) {
-            $statusIndex = 2; // Bestelling onderweg
-        } elseif ($minuten >= 5) {
-            $statusIndex = 1; // In oven
-        } else {
-            $statusIndex = 0; // Geplaatst
-        }
-    }
+switch ($bestelling['status']) {
+    case 1:
+        $statusIndex = 0; // Bestelling geplaatst
+        break;
+    case 2:
+        $statusIndex = 1; // Bestelling in oven
+        break;
+    case 3:
+        $statusIndex = 2; // Bestelling onderweg
+        break;
+    default:
+        $statusIndex = 0;
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="nl">
 
@@ -56,43 +59,35 @@ if (!empty($bestelTijd)) {
     <link rel="stylesheet" href="Css/style.css" />
     <title>Bestelling Status</title>
 </head>
-
 <body>
     <?php require_once 'header.php'; ?>
-    <main>
-
+        <main>
         <div class="bestelling-status">
-            <h1>Bestelling status</h1>
+            <h1>Bestelling status #<?= htmlspecialchars($bestelling['order_id']) ?></h1>
 
             <!-- Status stappen -->
             <div class="bestel-status <?= $statusIndex === 0 ? 'active' : 'inactive' ?>">Bestelling geplaatst</div>
             <div class="bestel-status <?= $statusIndex === 1 ? 'active' : 'inactive' ?>">Bestelling in oven</div>
             <div class="bestel-status <?= $statusIndex === 2 ? 'active' : 'inactive' ?>">Bestelling onderweg</div>
 
-
             <!-- Overzicht producten -->
             <div class="bestelling-overzicht">
                 <h2>Bestelde producten</h2>
-                <?php if (!empty($productlijst)): ?>
+                <?php if (!empty($productlijst)) { ?>
                     <ul>
-                        <?php foreach ($productlijst as $product => $aantal): ?>
-                            <li><?= htmlspecialchars($product) ?> x <?= (int) $aantal ?></li>
-                        <?php endforeach; ?>
+                        <?php foreach ($productlijst as $product) { ?>
+                            <li><?= htmlspecialchars($product['product_name']) ?> x <?= (int) $product['quantity'] ?></li>
+                        <?php } ?>
                     </ul>
-                <?php else: ?>
+                <?php } else { ?>
                     <p>Geen producten gevonden.</p>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <!-- Adresgegevens -->
             <div class="adres-details">
                 <h3>Afleveradres:</h3>
-                <p><?= htmlspecialchars($adres['straat'] ?? '-') ?></p>
-                <p><?= htmlspecialchars($adres['postcode'] ?? '-') ?></p>
-                <p><?= htmlspecialchars($adres['provincie'] ?? '-') ?></p>
-                <?php if (!empty($adres['opmerkingen'])): ?>
-                    <p><em>Opmerkingen: <?= htmlspecialchars($adres['opmerkingen']) ?></em></p>
-                <?php endif; ?>
+                <p><?= nl2br(htmlspecialchars($adres)) ?></p>
             </div>
 
             <!-- Besteltijd -->

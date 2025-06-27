@@ -132,17 +132,6 @@ function plaatsNieuweBestelling(string $username, string $name, string $adres, a
     return (int) $order_id;
 }
 
-
-
-// Haal alle medewerkers op uit [User]
-function haalPersoneelsledenOp(): array
-{
-    $conn = maakVerbinding();
-    $stmt = $conn->prepare("SELECT username FROM [User] WHERE role = 'Personnel'");
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_COLUMN);
-}
-
 function updateBestellingStatus(int $order_id, int $status): bool
 {
     $conn = maakVerbinding();

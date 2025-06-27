@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once 'data_functies.php';  
+require_once 'data_functies.php';
+
 
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Personnel') {
     header('Location: login.php');
@@ -13,18 +14,18 @@ if (!isset($_GET['order_id'])) {
     exit;
 }
 
-$order_id = (int)$_GET['order_id'];
+$order_id = (int) $_GET['order_id'];
 
 // Verwerk status update via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nieuwe_status'])) {
-    $nieuwe_status = (int)$_POST['nieuwe_status'];
+    $nieuwe_status = (int) $_POST['nieuwe_status'];
     updateBestellingStatus($order_id, $nieuwe_status);
     header("Location: wijzigbestelling.php?order_id=$order_id");
     exit;
 }
 
 // Haal bestelling info op voor weergave
-$bestelling = haalAlleBestellingenOp($order_id); 
+$bestelling = haalBestellingOp($order_id);
 if (!$bestelling) {
     echo "Bestelling niet gevonden.";
     exit;
@@ -50,13 +51,14 @@ if (!$bestelling) {
             <div class="bestel-info">
                 <div class="bestel-numner">Bestelling #<?= htmlspecialchars($bestelling['order_id']) ?></div>
                 <div class="status-knoppen">
-                    <form method="post" action="update_status.php">
+                    <h2>Wat is de status van de bestelling?</h2>
+                    <form method="post" action="wijzigbestelling.php?order_id=<?= $bestelling['order_id'] ?>">
                         <input type="hidden" name="order_id" value="<?= $bestelling['order_id'] ?>">
-                        <button type="submit" name="nieuwe_status" value="2" class="status-knop grijs">In de
-                            oven</button>
-                        <button type="submit" name="nieuwe_status" value="3" class="status-knop groen">Onderweg</button>
+                        <button type="submit" name="nieuwe_status" value="2" class="status-knop <?= ($bestelling['status'] == 2) ? 'groen' : 'grijs' ?>">In de oven</button>
+                        <button type="submit" name="nieuwe_status" value="3" class="status-knop <?= ($bestelling['status'] == 3) ? 'groen' : 'grijs' ?>">Onderweg</button>
                     </form>
                 </div>
+
             </div>
 
 
@@ -71,9 +73,9 @@ if (!$bestelling) {
                 <div class="wijziging-details">
                     <h3>Bestelling overzicht</h3>
                     <div>
-                        <?php foreach ($bestelling['producten'] as $product): ?>
+                        <?php foreach ($bestelling['producten'] as $product) { ?>
                             <p><?= htmlspecialchars($product['product_name']) ?> x<?= (int) $product['quantity'] ?></p>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </div>
                     <div class="wijziging-info">
                         <div><?= date('H:i, d-m-y', strtotime($bestelling['datetime'])) ?></div>
