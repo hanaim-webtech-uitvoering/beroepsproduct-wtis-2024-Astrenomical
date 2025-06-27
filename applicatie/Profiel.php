@@ -3,8 +3,6 @@ session_start();
 require_once 'db_connectie.php';
 require_once 'data_functies.php';
 
-
-
 if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit;
@@ -42,6 +40,7 @@ $laatsteAdres = haalLaatsteBestellingAdresOp($username);
     <?php require_once 'header.php'; ?>
     <main>
         <div class="profiel-overzicht">
+            
             <!-- PROFIELGEGEVENS -->
             <div class="profiel-info">
                 <h2>Profielgegevens</h2>

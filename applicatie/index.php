@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actie']) && isset($_P
         }
     }
 }
+
 $productData = haalProductenOp();
 
 // Groepeer producten per type

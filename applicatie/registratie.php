@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <?php require_once 'header.php'; ?>
     <main>
+        
         <div class="registratie-form">
             <form action="#" method="POST">
                 <h2>Vul de volgende gegevens in om te registreren.</h2>

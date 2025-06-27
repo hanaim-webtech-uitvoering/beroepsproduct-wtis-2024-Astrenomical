@@ -720,7 +720,7 @@ input:focus {
 .wijziging-overzicht {
     width: 100%;
     max-width: 700px;
-    margin: 40px auto; /* centreren met automatische marges */
+    margin: 40px auto; 
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -757,12 +757,12 @@ input:focus {
 }
 
 .groen {
-    background-color: #28a745; /* groen */
+    background-color: #28a745; 
     color: white;
 }
 
 .grijs {
-    background-color: #ccc; /* grijs */
+    background-color: #ccc; 
     color: #333;
 }
 
